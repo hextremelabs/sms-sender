@@ -40,12 +40,12 @@ open class SmsHandler {
   protected open val randomGen = Random()
 
   @PostConstruct
-  @Schedule(hour = "*/3")
+  @Schedule(hour = "*/3", persistent = false)
   open fun resetPreferred() {
     preferred = default;
   }
 
-  @Schedule(hour = "*", minute = "*/5")
+  @Schedule(hour = "*", minute = "*/5", persistent = false)
   open fun evaluateFailover() {
     if (messages.size < 5) return
 
