@@ -50,7 +50,7 @@
   </properties>
 
   <dependencies>
-    <!--Compile Scope-->
+    <!--Provided Scope-->
     <dependency>
       <groupId>javax</groupId>
       <artifactId>javaee-api</artifactId>
