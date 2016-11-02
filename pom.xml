@@ -15,7 +15,7 @@
   </parent>
 
   <name>${project.groupId}:${project.artifactId}</name>
-  <description>A lightweight USSD application framework</description>
+  <description>A simple sms sender with automatic failover</description>
   <url>http://www.hextremelabs.com/</url>
 
   <licenses>
@@ -38,7 +38,6 @@
     <connection>scm:git:https://github.com/hextremelabs/sms-sender.git</connection>
     <developerConnection>scm:git:https://github.com/hextremelabs/sms-sender.git</developerConnection>
     <url>https://github.com/hextremelabs/sms-sender.git</url>
-    <tag>lib-ussd-1.0</tag>
   </scm>
 
   <properties>
