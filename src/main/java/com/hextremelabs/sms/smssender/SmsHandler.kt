@@ -56,9 +56,11 @@ open class SmsHandler {
   }
 
   open fun failover() {
-    preferred = providers.filter { it != preferred }[randomGen.nextInt(providers.count() - 1)]
+    preferred = providerList().filter { it != preferred }[randomGen.nextInt(providerList().count() - 1)]
     messages.clear()
   }
+
+  open fun providerList(): Iterable<SmsProvider> = providers
 
   @JvmOverloads
   open fun sendSms(phone: String, title: String, message: String, retryCount: Int = 0) : BaseResponse<String> {
