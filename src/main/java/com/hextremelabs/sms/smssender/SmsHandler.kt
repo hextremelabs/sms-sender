@@ -5,7 +5,8 @@ import com.hextremelabs.quickee.response.DefaultResponses
 import com.hextremelabs.quickee.response.ResponseCodes.REQUEST_SUCCESSFUL
 import com.hextremelabs.quickee.response.ResponseCodes.TRANSACTION_FAILED
 import com.hextremelabs.sms.smssender.kedesa.Kedesa
-import java.util.*
+import java.util.ArrayList
+import java.util.Random
 import javax.annotation.PostConstruct
 import javax.ejb.Schedule
 import javax.ejb.Stateless
@@ -50,19 +51,14 @@ open class SmsHandler {
     if (messages.size < 5) return
 
     // Choose another smsProvider at random if not up to 60% of randomly selected sent messages were delivered.
-    if (Array(5, { preferred.isDelivered(messages[it * (messages.size / 5)]) }).count { it } < 3) {
-      failover()
-    }
-
+    if (Array(5, { preferred.isDelivered(messages[it * (messages.size / 5)]) }).count { it } < 3) failover()
     messages.clear()
   }
 
   open fun failover() {
-    preferred = providerList().filter { it != preferred }[randomGen.nextInt(providerList().count() - 1)]
+    preferred = providers.filter { it != preferred }[randomGen.nextInt(providers.count() - 1)]
     messages.clear()
   }
-
-  open fun providerList() : Iterable<SmsProvider> = providers
 
   @JvmOverloads
   open fun sendSms(phone: String, title: String, message: String, retryCount: Int = 0) : BaseResponse<String> {
