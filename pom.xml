@@ -110,8 +110,8 @@
     </dependency>
     <dependency>
       <groupId>com.hextremelabs</groupId>
-      <artifactId>Quickee</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <artifactId>quickee</artifactId>
+      <version>1.0.Alpha1</version>
     </dependency>
   </dependencies>
 
