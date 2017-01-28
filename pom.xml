@@ -131,6 +131,7 @@
           <version>2.5.3</version>
           <configuration>
             <preparationGoals>dokka:javadocJar</preparationGoals>
+            <completionGoals>dokka:javadocJar</completionGoals>
           </configuration>
         </plugin>
       </plugins>
