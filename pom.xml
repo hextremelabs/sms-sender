@@ -152,24 +152,6 @@
         <!--</executions>-->
       <!--</plugin>-->
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>buildnumber-maven-plugin</artifactId>
-        <version>1.4</version>
-        <executions>
-          <execution>
-            <phase>validate</phase>
-            <goals>
-              <goal>create</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <doCheck>false</doCheck>
-          <doUpdate>false</doUpdate>
-          <shortRevisionLength>6</shortRevisionLength>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.jetbrains.kotlin</groupId>
         <artifactId>kotlin-maven-plugin</artifactId>
         <version>${kotlin.version}</version>
@@ -186,30 +168,6 @@
             <phase>test-compile</phase>
             <goals>
               <goal>test-compile</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.7.7.201606060606</version>
-        <configuration>
-          <destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
-          <dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
-        </configuration>
-        <executions>
-          <execution>
-            <id>jacoco-initialize</id>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>jacoco-site</id>
-            <phase>package</phase>
-            <goals>
-              <goal>report</goal>
             </goals>
           </execution>
         </executions>
