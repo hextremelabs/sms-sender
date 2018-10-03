@@ -7,6 +7,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Matchers.anyString
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.doReturn
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.times
@@ -22,7 +23,7 @@ class SmsHandlerTest {
   companion object {
     val PHONE = "+2348012345678"
   }
-  
+
   lateinit var handler: SmsHandler
   lateinit var kedesaClient: SmsProvider
   lateinit var infoBipClient: SmsProvider
@@ -36,6 +37,7 @@ class SmsHandlerTest {
       forEach {
         `when`(it.sendMessage(PHONE, "Testing Mic", "Testing microphone"))
           .thenReturn(BaseResponse(0, "Request successful", System.currentTimeMillis().toString()))
+
       `when`(it.sendMessage(PHONE, "Bad Mic", "Testing microphone"))
           .thenReturn(BaseResponse(301, "Failed", System.currentTimeMillis().toString()))
       }
@@ -43,8 +45,9 @@ class SmsHandlerTest {
 
     handler = spy(SmsHandler::class.java).apply {
       default = kedesaClient
+      enabledProviders = "Infobip"
       providers = mock(Instance::class.java) as Instance<SmsProvider>
-      `when`(providerList()).thenReturn(providerList)
+      doReturn(providerList).`when`(this).providerList()
       resetPreferred()
     }
   }

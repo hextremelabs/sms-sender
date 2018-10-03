@@ -1,10 +1,11 @@
 package com.hextremelabs.sms.smssender
 
+import com.hextremelabs.quickee.configuration.Config
 import com.hextremelabs.quickee.response.BaseResponse
 import com.hextremelabs.quickee.response.DefaultResponses
 import com.hextremelabs.quickee.response.ResponseCodes.REQUEST_SUCCESSFUL
 import com.hextremelabs.quickee.response.ResponseCodes.TRANSACTION_FAILED
-import com.hextremelabs.sms.smssender.kedesa.Kedesa
+import com.hextremelabs.sms.smssender.infobip.Infobip
 import java.util.ArrayList
 import java.util.Random
 import javax.annotation.PostConstruct
@@ -22,48 +23,63 @@ import javax.inject.Inject
  */
 @Stateless
 @TransactionAttribute(NOT_SUPPORTED)
-open class SmsHandler {
+class SmsHandler {
 
   @Inject
-  internal open lateinit var dr: DefaultResponses
+  @Config("sms.providers.enabled")
+  internal lateinit var enabledProviders: String
+
+  @Inject
+  private lateinit var dr: DefaultResponses
 
   @Inject
   @Any
-  internal open lateinit var providers: Instance<SmsProvider>
+  internal lateinit var providers: Instance<SmsProvider>
 
   @Inject
-  @Kedesa
-  internal open lateinit var default: SmsProvider
+  @Infobip
+  internal lateinit var default: SmsProvider
 
-  internal open lateinit var preferred: SmsProvider
+  internal lateinit var preferred: SmsProvider
 
-  protected open val messages = ArrayList<String>()
-  protected open val randomGen = Random()
+  private val messages = ArrayList<String>()
+
+  private val randomGen = Random()
 
   @PostConstruct
   @Schedule(hour = "*/3", persistent = false)
-  open fun resetPreferred() {
-    preferred = default;
+  fun resetPreferred() {
+    preferred = default
   }
 
   @Schedule(hour = "*", minute = "*/5", persistent = false)
-  open fun evaluateFailover() {
+  fun evaluateFailover() {
     if (messages.size < 5) return
 
     // Choose another smsProvider at random if not up to 60% of randomly selected sent messages were delivered.
-    if (Array(5, { preferred.isDelivered(messages[it * (messages.size / 5)]) }).count { it } < 3) failover()
+    val deliveredCountIn5random = Array(5, {
+      preferred.isDelivered(messages[it * (messages.size / 5)])
+    }).count { it }
+
+    if (deliveredCountIn5random < 3) failover()
     messages.clear()
   }
 
-  open fun failover() {
+  fun failover() {
+    if (providerList().count() < 2) return
+
     preferred = providerList().filter { it != preferred }[randomGen.nextInt(providerList().count() - 1)]
     messages.clear()
   }
 
-  open fun providerList(): Iterable<SmsProvider> = providers
+  fun providerList(): Iterable<SmsProvider> = providers
+      .filter { it.javaClass.annotations
+          .map { it.javaClass.simpleName }
+          .any { enabledProviders.contains(it!!) }
+      }
 
   @JvmOverloads
-  open fun sendSms(phone: String, title: String, message: String, retryCount: Int = 0) : BaseResponse<String> {
+  fun sendSms(phone: String, title: String, message: String, retryCount: Int = 0) : BaseResponse<String> {
     return try {
       preferred.sendMessage(phone, title, message).apply {
         if (status.code != REQUEST_SUCCESSFUL) failover() else messages.add(entity)

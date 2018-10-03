@@ -20,7 +20,7 @@ Sample usage:
 *Kotlin*
 ```
 @Inject 
-protected open lateinit var handler: SmsHandler
+protected lateinit var handler: SmsHandler
 
 // Don't care about which provider is actually used.
 handler.sendSms(phone, title, message)
