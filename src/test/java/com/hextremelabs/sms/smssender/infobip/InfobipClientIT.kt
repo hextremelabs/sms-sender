@@ -24,12 +24,14 @@ class InfobipClientIT {
     @BeforeClass @JvmStatic fun setup() {
       client.username = System.getProperty("infobipUsername")
       client.password = System.getProperty("infobipPassword")
-      println("USERNAME_FOUND: ${client.username != null}\nPASSWORD_FOUND: ${client.password != null}")
       client.serviceBaseUrl = "https://api.infobip.com/sms/1"
 
       client.dr = Mockito.mock(DefaultResponses::class.java).apply {
-        `when`(status(REQUEST_SUCCESSFUL)).thenReturn(ResponseStatus(REQUEST_SUCCESSFUL, "Request Successful"))
-        `when`(status(TRANSACTION_FAILED)).thenReturn(ResponseStatus(TRANSACTION_FAILED, "Unable to send text message"))
+        `when`(status(REQUEST_SUCCESSFUL))
+            .thenReturn(ResponseStatus(REQUEST_SUCCESSFUL, "Request Successful"))
+
+        `when`(status(TRANSACTION_FAILED))
+            .thenReturn(ResponseStatus(TRANSACTION_FAILED, "Unable to send text message"))
       }
       client.setup()
       client.initAuthToken()
@@ -39,7 +41,7 @@ class InfobipClientIT {
   @Test
   fun sendMessageAndIsDelivered() {
     println("testSendMessage")
-    var apiResponse = client.sendMessage(phone, "Lite IT", "Integration test. InfobipClient#sendMessage()")
+    val apiResponse = client.sendMessage(phone, "Lite IT", "Integration test. InfobipClient#sendMessage()")
     assertTrue { apiResponse.status.code == ResponseCodes.REQUEST_SUCCESSFUL }
     assertNotNull(apiResponse.entity)
 

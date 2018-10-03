@@ -45,7 +45,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <kotlin.version>1.0.4</kotlin.version>
+    <kotlin.version>1.2.71</kotlin.version>
     <resteasy.version>3.0.17.Final</resteasy.version>
   </properties>
 
@@ -54,14 +54,14 @@
     <dependency>
       <groupId>javax</groupId>
       <artifactId>javaee-api</artifactId>
-      <version>7.0</version>
+      <version>8.0</version>
       <scope>provided</scope>
     </dependency>
 
     <!--Test Scope-->
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-test</artifactId>
+      <artifactId>kotlin-test-junit</artifactId>
       <version>${kotlin.version}</version>
       <scope>test</scope>
     </dependency>
@@ -111,7 +111,7 @@
     <dependency>
       <groupId>com.hextremelabs</groupId>
       <artifactId>quickee</artifactId>
-      <version>1.0.Alpha1</version>
+      <version>1.0.Alpha12</version>
     </dependency>
   </dependencies>
 
@@ -137,10 +137,11 @@
     </pluginManagement>
 
     <plugins>
+
       <plugin>
         <groupId>org.jetbrains.dokka</groupId>
         <artifactId>dokka-maven-plugin</artifactId>
-        <version>0.9.13</version>
+        <version>1.0.0</version>
         <executions>
           <execution>
             <phase>pre-site</phase>
@@ -150,10 +151,34 @@
           </execution>
         </executions>
       </plugin>
+
+
       <plugin>
         <groupId>org.jetbrains.kotlin</groupId>
         <artifactId>kotlin-maven-plugin</artifactId>
         <version>${kotlin.version}</version>
+
+        <dependencies>
+          <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-maven-allopen</artifactId>
+            <version>${kotlin.version}</version>
+          </dependency>
+        </dependencies>
+
+        <configuration>
+          <compilerPlugins>
+            <plugin>all-open</plugin>
+          </compilerPlugins>
+
+          <pluginOptions>
+            <option>all-open:annotation=com.hextremelabs.quickee.annotation.Proxyable</option>
+            <option>all-open:annotation=javax.ejb.Stateless</option>
+            <option>all-open:annotation=javax.enterprise.context.ApplicationScoped</option>
+          </pluginOptions>
+          <jvmTarget>1.8</jvmTarget>
+        </configuration>
+
         <executions>
           <execution>
             <id>compile</id>

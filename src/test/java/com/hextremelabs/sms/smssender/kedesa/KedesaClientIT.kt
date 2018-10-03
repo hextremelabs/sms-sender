@@ -23,7 +23,6 @@ class KedesaClientIT {
     @BeforeClass @JvmStatic fun setup() {
       client.apiKey = System.getProperty("kedesaApiKey")
       client.apiSecret = System.getProperty("kedesaApiSecret")
-      println("API_KEY_FOUND: ${client.apiKey != null}\nAPI_SECRET_FOUND: ${client.apiSecret != null}")
       client.serviceBaseUrl = "https://www.kedesa.com"
       client.dr = mock(DefaultResponses::class.java).apply {
         `when`(status(REQUEST_SUCCESSFUL)).thenReturn(ResponseStatus(REQUEST_SUCCESSFUL, "Request Successful"))
@@ -36,7 +35,7 @@ class KedesaClientIT {
   @Test
   fun sendMessageAndIsDelivered() {
     println("testSendMessage")
-    var apiResponse = client.sendMessage(phone, "Lite IT", "Integration test. KedesaClient#sendMessage()")
+    val apiResponse = client.sendMessage(phone, "Lite IT", "Integration test. KedesaClient#sendMessage()")
     assertTrue { apiResponse.status.code == REQUEST_SUCCESSFUL }
     assertNotNull(apiResponse.entity)
 
