@@ -20,9 +20,9 @@ Sample usage:
 *Kotlin*
 ```
 @Inject 
-protected open lateinit var handler: SmsHandler
+private lateinit var handler: SmsHandler
 
-// Don't care about which provider is actually used.
+// Don't care about which provider is actually used
 handler.sendSms(phone, title, message)
 ```
 
@@ -31,6 +31,5 @@ handler.sendSms(phone, title, message)
 @Inject
 private SmsHandler handler;
 
-// Don't care about which provider is actually used.
 handler.sendSms(phone, title, message);
 ```
